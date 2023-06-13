@@ -94,7 +94,6 @@
             this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
-            "-Изменить данные-",
             "-Выход-"});
             this.comboBox1.Location = new System.Drawing.Point(680, 8);
             this.comboBox1.Name = "comboBox1";
@@ -168,6 +167,9 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.comboBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Form1";
             this.Text = "Набор персонала";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
