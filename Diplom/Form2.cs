@@ -15,8 +15,7 @@ namespace Diplom
 {
     public partial class Form2 : Form
     {
-
-        string lastName = string.Empty;
+        public static string lastName;
         public Form2()
         {
             InitializeComponent();
@@ -30,11 +29,9 @@ namespace Diplom
 
             if (AuthenticateUser(login, password))
             {
-
                 Form1 form1 = new Form1();
                 form1.Show();
                 this.Hide();
-                MessageBox.Show(lastName);
             }
             else
             {
