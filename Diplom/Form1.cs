@@ -14,6 +14,8 @@ namespace Diplom
 {
     public partial class Form1 : Form
     {
+        string Id, Fio, Dob, Dol, Resume, Gender, NazvanieOrg, Dolzhnost, PeriodRaboti, UrObrazov, UchZaved, Specialnost, PerObuch, DopObrazovanie, Telephone, Email;
+
         public Form1()
         {
             InitializeComponent();
@@ -23,7 +25,6 @@ namespace Diplom
         {
             comboBox1.Text = Form2.lastName;
             dataGridView1.ReadOnly = true; // Запретить редактирование ячеек
-            dataGridView1.Visible = false;
             comboBox1.FlatStyle = FlatStyle.Flat;           
 
         }
@@ -52,11 +53,11 @@ namespace Diplom
 
         private void button1_Click(object sender, EventArgs e)
         {
-            dataGridView1.Visible = true;
             LoadData();
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            richTextBox1.Clear();
             button2.Enabled = false;
+            button3.Enabled = false;
+            button4.Enabled = false;
         }
         private void LoadData()
         {
@@ -95,39 +96,74 @@ namespace Diplom
                 selectedRowData.Add(cell.Value?.ToString() ?? string.Empty);
             }
 
-            if (selectedRowData.Count > 4)
+            if (selectedRowData.Count > 3)
             {
-                // Получаем данные строки из источника данных (DataTable)
-                DataRowView rowView = selectedRow.DataBoundItem as DataRowView;
+                //string connectionString = "Server=chuc.sdlik.ru;Port=33333;Database=VKR_OtdelenovD;Uid=VKR_OtdelenovD;Pwd=dalshd2893890Yds;";
+                //MySqlCommand command = new MySqlCommand(query, connectionString);
+                //using (MySqlConnection connection = new MySqlConnection(connectionString))
+                //{
 
-                if (rowView != null)
+                //}
+                if (e.RowIndex >= 0)
                 {
-                    string selectedID = selectedRow.Cells["ID"].Value.ToString();
-                    idelete = Convert.ToInt32(selectedID);
-                    DataRow row = rowView.Row;
+                    // Получение значения ячейки с кодом
+                    DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                    Id = row.Cells["Код"].Value.ToString();
 
-                    // Выводим все данные строки в richTextBox1
-                    StringBuilder sb = new StringBuilder();
-                    foreach (object item in row.ItemArray)
-                    {
-                        sb.AppendLine(item.ToString());
-                    }
-                    richTextBox1.Text += sb.ToString() + Environment.NewLine;
                 }
 
+                string connectionString = "Server=chuc.sdlik.ru;Port=33333;Database=VKR_OtdelenovD;Uid=VKR_OtdelenovD;Pwd=dalshd2893890Yds;";
+                string query = "SELECT * FROM rezume WHERE id = @Id";
+
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@Id", Id);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Id = reader.GetString(0);  // Первый столбец
+                            Fio = reader.GetString(1);  // Второй столбец
+                            Dob = reader.GetString(2);  // Третий столбец
+                            Dol = reader.GetString(3);  // Четвертый столбец
+                            Resume = reader.GetString(4);  // Пятый столбец
+                            Gender = reader.GetString(5);  // Шестой столбец
+                            NazvanieOrg = reader.GetString(6); 
+                            Dolzhnost = reader.GetString(7); 
+                            PeriodRaboti = reader.GetString(8); 
+                            UrObrazov = reader.GetString(9); 
+                            UchZaved = reader.GetString(10); 
+                            Specialnost = reader.GetString(11);
+                            PerObuch = reader.GetString(12); 
+                            DopObrazovanie = reader.GetString(13); 
+                            Telephone = reader.GetString(14); 
+                            Email = reader.GetString(15); 
+                        }
+                    }
+                }
+                MessageBox.Show($"{Id} + {Fio} + {Dob} + {Dol} + {Resume} + {Gender} + {NazvanieOrg} + {Dolzhnost} + {PeriodRaboti} + {UrObrazov} + {UchZaved} + {Specialnost} + {PerObuch} + {DopObrazovanie} + {Telephone} + {Email}");
+
+
+
+
+
+
+
                 // Очищаем dataGridView1 и скрываем его
-                dataGridView1.DataSource = null;
-                dataGridView1.Visible = false;
                 button2.Enabled = true;
                 button3.Enabled = true;
-                richTextBox1.Visible = true;
+
             }
             else
             {
                 string selectedValue = selectedRowData[0];
 
                 string connectionString = "Server=chuc.sdlik.ru;Port=33333;Database=VKR_OtdelenovD;Uid=VKR_OtdelenovD;Pwd=dalshd2893890Yds;";
-                string query = "SELECT id, fio AS 'ФИО', dob AS 'Дата рожд.', dol AS 'Жел. должность', resume AS 'Резюме', gender AS 'Пол', nazvanieOrg AS 'Назв. Орг.', dolzhnost AS 'Прошл. Должн.', periodRaboti AS 'Период работы', urObrazov AS 'Ур. Обр.', uchZaved AS 'Уч. Завед.', specialnost AS 'Специальность', perObuch AS 'Пер. Обуч.', dopObrazovanie AS 'Доп. Образ.', telephone AS 'Тел.', email AS 'Почта' FROM rezume WHERE dol = @dol";
+                string query = "SELECT id AS 'Код', fio AS 'ФИО', dob AS 'Дата рожд.', dol AS 'Жел. должность' FROM rezume WHERE dol = @dol";
+
 
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
@@ -158,15 +194,39 @@ namespace Diplom
         {
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
-        int idelete;
         private void button2_Click(object sender, EventArgs e)
         {
-            richTextBox1.Clear();
-            richTextBox1.Visible = false;
+
+            string connectionString = "Server=chuc.sdlik.ru;Port=33333;Database=VKR_OtdelenovD;Uid=VKR_OtdelenovD;Pwd=dalshd2893890Yds;";
+            string query = "INSERT INTO rezume_otkl (fio, dob, dol, resume, gender, nazvanieOrg, dolzhnost, periodRaboti, urObrazov, uchZaved, specialnost, perObuch, dopObrazovanie, telephone, email) VALUES (@Fio, @Dob, @Dol, @Resume, @Gender, @NazvanieOrg, @Dolzhnost, @PeriodRaboti, @UrObrazov, @UchZaved, @Specialnost, @PerObuch, @DopObrazovanie, @Telephone, @Email)";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+
+                // Замените переменные в соответствии с вашими данными
+                command.Parameters.AddWithValue("@fio", Fio);
+                command.Parameters.AddWithValue("@dob", Dob);
+                command.Parameters.AddWithValue("@dol", Dol);
+                command.Parameters.AddWithValue("@resume", Resume);
+                command.Parameters.AddWithValue("@gender", Gender);
+                command.Parameters.AddWithValue("@nazvanieOrg", NazvanieOrg);
+                command.Parameters.AddWithValue("@dolzhnost", Dolzhnost);
+                command.Parameters.AddWithValue("@periodRaboti", PeriodRaboti);
+                command.Parameters.AddWithValue("@urObrazov", UrObrazov);
+                command.Parameters.AddWithValue("@uchZaved", UchZaved);
+                command.Parameters.AddWithValue("@specialnost", Specialnost);
+                command.Parameters.AddWithValue("@perObuch", PerObuch);
+                command.Parameters.AddWithValue("@dopObrazovanie", DopObrazovanie);
+                command.Parameters.AddWithValue("@telephone", Telephone);
+                command.Parameters.AddWithValue("@email", Email);
+
+                command.ExecuteNonQuery();
+            }
+
             button2.Enabled=false;
             MessageBox.Show("Кандидатура была отклонена!");
-            int iddd = idelete;
-            string connectionString = "Server=chuc.sdlik.ru;Port=33333;Database=VKR_OtdelenovD;Uid=VKR_OtdelenovD;Pwd=dalshd2893890Yds;";
 
             string deleteCommandText = "DELETE FROM rezume WHERE id = @id";
 
@@ -176,45 +236,78 @@ namespace Diplom
 
                 using (MySqlCommand command = new MySqlCommand(deleteCommandText, connection))
                 {
-                    command.Parameters.AddWithValue("@id", iddd);
+                    command.Parameters.AddWithValue("@id", Id);
 
                     command.ExecuteNonQuery();
                 }
 
                 connection.Close();
             }
+
+            LoadData();
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            button4.Enabled = false;
+
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string connectionString = "Server=chuc.sdlik.ru;Port=33333;Database=VKR_OtdelenovD;Uid=VKR_OtdelenovD;Pwd=dalshd2893890Yds;";
 
-            using (var connection = new MySqlConnection(connectionString))
+            string connectionString = "Server=chuc.sdlik.ru;Port=33333;Database=VKR_OtdelenovD;Uid=VKR_OtdelenovD;Pwd=dalshd2893890Yds;";
+            string query = "INSERT INTO rezume_otmet (fio, dob, dol, resume, gender, nazvanieOrg, dolzhnost, periodRaboti, urObrazov, uchZaved, specialnost, perObuch, dopObrazovanie, telephone, email) VALUES (@Fio, @Dob, @Dol, @Resume, @Gender, @NazvanieOrg, @Dolzhnost, @PeriodRaboti, @UrObrazov, @UchZaved, @Specialnost, @PerObuch, @DopObrazovanie, @Telephone, @Email)";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+
+                // Замените переменные в соответствии с вашими данными
+                command.Parameters.AddWithValue("@fio", Fio);
+                command.Parameters.AddWithValue("@dob", Dob);
+                command.Parameters.AddWithValue("@dol", Dol);
+                command.Parameters.AddWithValue("@resume", Resume);
+                command.Parameters.AddWithValue("@gender", Gender);
+                command.Parameters.AddWithValue("@nazvanieOrg", NazvanieOrg);
+                command.Parameters.AddWithValue("@dolzhnost", Dolzhnost);
+                command.Parameters.AddWithValue("@periodRaboti", PeriodRaboti);
+                command.Parameters.AddWithValue("@urObrazov", UrObrazov);
+                command.Parameters.AddWithValue("@uchZaved", UchZaved);
+                command.Parameters.AddWithValue("@specialnost", Specialnost);
+                command.Parameters.AddWithValue("@perObuch", PerObuch);
+                command.Parameters.AddWithValue("@dopObrazovanie", DopObrazovanie);
+                command.Parameters.AddWithValue("@telephone", Telephone);
+                command.Parameters.AddWithValue("@email", Email);
+
+                command.ExecuteNonQuery();
+            }
+
+            button2.Enabled = false;
+            MessageBox.Show("Кандидатура была отмечена!");
+
+            string deleteCommandText = "DELETE FROM rezume WHERE id = @id";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
 
-                string sql = "SELECT fio, telephone, email FROM rezume WHERE id = @id";
-                using (var command = new MySqlCommand(sql, connection))
+                using (MySqlCommand command = new MySqlCommand(deleteCommandText, connection))
                 {
-                    command.Parameters.AddWithValue("@id", idelete);
+                    command.Parameters.AddWithValue("@id", Id);
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            string telephone = reader.GetString("telephone");
-                            string email = reader.GetString("email");
-                            string fio = reader.GetString("fio");
-
-                            MessageBox.Show($"ФИО: {fio}\nТелефон: {telephone}\nПочта: {email}");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Запись с указанным идентификатором не найдена.");
-                        }
-                    }
+                    command.ExecuteNonQuery();
                 }
+
+                connection.Close();
             }
+
+            LoadData();
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            button4.Enabled = false;
+
         }
     }
 }

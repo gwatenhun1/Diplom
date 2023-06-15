@@ -16,6 +16,7 @@ namespace Diplom
     public partial class Form2 : Form
     {
         public static string lastName;
+        public static string Login;
         public Form2()
         {
             InitializeComponent();

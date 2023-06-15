@@ -36,3 +36,4 @@ C:\Users\Dojan\Source\Repos\gwatenhun1\Diplom\Diplom\obj\Debug\Diplom.csproj.Cop
 C:\Users\Dojan\Source\Repos\gwatenhun1\Diplom\Diplom\obj\Debug\Diplom.exe
 C:\Users\Dojan\Source\Repos\gwatenhun1\Diplom\Diplom\obj\Debug\Diplom.pdb
 C:\Users\Dojan\Source\Repos\gwatenhun1\Diplom\Diplom\obj\Debug\Diplom.Form2.resources
+C:\Users\Dojan\source\repos\gwatenhun1\Diplom\Diplom\obj\Debug\Diplom.Form4.resources
